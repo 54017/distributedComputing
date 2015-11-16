@@ -9,8 +9,7 @@ import httpclient
 import urllib
 import json
 
-from tornado.options import define, options
-define("port", default=8000, help="run on the given port", type=int)
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -55,7 +54,7 @@ class qqHandler(tornado.web.RequestHandler):
         client.fetch("https://graph.qq.com/oauth2.0/authorize?" + urllib.urlencode({}), callback=self.on_response)
 
     def on_response(self, response):
-        
+
 
 if __name__ == "__main__":
     tornado.options.parse_command_line()
@@ -75,5 +74,4 @@ if __name__ == "__main__":
     ], **settings)
 
     http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
