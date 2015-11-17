@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta property="qc:admins" content="535717046767177276375" />
+	<title></title>
+</head>
+<body>
+	<form action='/login' method='post'>
+		<input type='name' name='username' />
+		<input type='password' name='password' />
+		<button type='submit'>提交</button>
+	</form>
+	<input id="qq" type="button" value="点击使用QQ登陆" />
+	<script type="text/javascript">
+		document.getElementById('qq').addEventListener('click', function(e) {
+			window.location.href = "/qq"
+		})
+	</script>
+</body>
+</html>

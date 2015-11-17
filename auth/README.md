@@ -1,0 +1,1 @@
+self.write会导致self.finish()

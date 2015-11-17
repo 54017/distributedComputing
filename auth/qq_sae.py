@@ -1,16 +1,22 @@
-import tornado.httpserver
-import tornado.ioloop
+# -*- coding: utf-8 -*-
+import os
 import tornado.web
-import tornado.httpclient
-import tornado.options
-import os.path
-from pymongo import MongoClient
+import tornado.wsgi
+import urllib2
+import urlparse
+import sae
+import wsgiref.handlers
+import sae.kvdb
 import hashlib
 import urllib
 import json
+import sae
+import wsgiref.handlers
+import sae.kvdb
+import re
 
-from tornado.options import define, options
-define("port", default=8000, help="run on the given port", type=int)
+
+
 
 class BaseHandler(tornado.web.RequestHandler):
     def get_current_user(self):
@@ -61,7 +67,7 @@ class WelcomeHandler(BaseHandler):
         name = third_response["nickname"]
         self.set_secure_cookie("username", name)
         self.render('index.html', user=name)
-
+        
 class LogoutHandler(BaseHandler):
     def get(self):
         if (self.get_argument("logout", None)):
@@ -75,24 +81,19 @@ class qqHandler(tornado.web.RequestHandler):
         state = m.hexdigest()
         self.redirect("https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=101265047&redirect_uri=http://liyiqi.sinaapp.com&state=" + state)
 
-if __name__ == "__main__":
-    tornado.options.parse_command_line()
 
-    settings = {
-        "template_path": os.path.join(os.path.dirname(__file__), "templates"),
-        "static_path": os.path.join(os.path.dirname(__file__), "static"),
-        "cookie_secret": "bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
-        "login_url": "/login",
-        "debug": True
-    }
+settings = {
+    "template_path": os.path.join(os.path.dirname(__file__), "templates"),
+    "cookie_secret": "bZJc2sWbQLKos6GkHn/VB9oXwQt8S0R0kRvJ5/xJ89E=",
+    "login_url": "/login",
+    "debug": True
+}
 
-    application = tornado.web.Application([
-        (r'/', WelcomeHandler),
-        (r'/login', LoginHandler),
-        (r'/logout', LogoutHandler),
-        (r'/qq', qqHandler)
-    ], **settings)
+app = tornado.wsgi.WSGIApplication([
+    (r'/', WelcomeHandler),
+    (r'/login', LoginHandler),
+    (r'/logout', LogoutHandler),
+    (r'/qq', qqHandler)
+], **settings)
 
-    http_server = tornado.httpserver.HTTPServer(application)
-    http_server.listen(options.port)
-    tornado.ioloop.IOLoop.instance().start()
+application = sae.create_wsgi_app(app)

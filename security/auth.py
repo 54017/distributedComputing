@@ -14,8 +14,6 @@ def role(array):
     def _role(method):
         def __role(self, *args, **kwargs):
             type = self.get_secure_cookie("type")
-            print "type: ", type 
-            print "array", array
             if type in array:
                 return method(self, *args, **kwargs)
             else:
