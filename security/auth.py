@@ -7,8 +7,8 @@ from pymongo import MongoClient
 import hashlib
 
 from tornado.options import define, options
-define("port", default=80, help="run on the given port", type=int)
 
+define("port", default=8888, help="run on the given port", type=int)
 
 def role(array):
     def _role(method):
